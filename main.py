@@ -7,7 +7,7 @@ def process_company(api: APIClient, company_data: dict) -> bool:
     logger = logging.getLogger(__name__)
     
     try:
-        logger.info(f"开始处理企业: {company_data['company_name']}")
+        logger.info(f"开始处理企业: {company_data['enterpriseName']}")
         
         # 创建企业
         company_id = api.create_company(company_data)

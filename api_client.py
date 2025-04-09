@@ -3,13 +3,13 @@ import requests
 import logging
 from typing import Optional, Dict
 from config import Config
+import random
 
 logger = logging.getLogger(__name__)
 
 class APIClient:
     def __init__(self):
-        Config.validate()
-        self.base_url = Config.API_BASE_URL.rstrip('/')
+        self.base_url = Config.API_BASE_URL
         self.session = requests.Session()
         
     def _request(self, method: str, endpoint: str, **kwargs) -> Optional[Dict]:
@@ -50,7 +50,7 @@ class APIClient:
                     "title": "企业的生产设备数字化率",
                     "questionId": "1844279856171454402",
                     "optionIds": [
-                        "1844558205435383808"
+                        random.choice(["1844557809308536832", "1844558205435383808", "1844558225635151872", "1844558246426316800", "1844558268689682432"])
                     ],
                     "blank": {}
                 },
@@ -61,7 +61,7 @@ class APIClient:
                     "title": "企业的生产设备联网率",
                     "questionId": "1844280428161273803",
                     "optionIds": [
-                        "1844559625031127040"
+                        random.choice(["1844559593980694528", "1844559625031127040", "1844559641703485440", "1844559656928808960", "1844559712058740736"])
                     ],
                     "blank": {}
                 },
@@ -72,7 +72,7 @@ class APIClient:
                     "title": "企业实现数据自动采集的业务环节覆盖范围",
                     "questionId": "1844281512367886304",
                     "optionIds": [
-                        "1844560424025067520"
+                        random.choice(["1844560165639163904", "1844560368551202816", "1844560386293108736", "1844560403942739968", "1844560424025067520", "1844560424025067525", "1844561303776137217", "1844561303776137218", "1844561303776137219", "1844561303776137220", "1844562916863512576", "1844562916863512577", "1844562916863512578", "1844562916863512579", "1844562916863512580"])
                     ],
                     "blank": {}
                 },
@@ -83,7 +83,7 @@ class APIClient:
                     "title": "企业使用本地或云化部署的信息化服务，实现业务的数字化管理情况",
                     "questionId": "1844295437452972005",
                     "optionIds": [
-                        "1844564007877480450"
+                        random.choice(["1844564007877480448", "1844564007877480449", "1844564007877480450", "1844564007877480451", "1844564007877480452"])
                     ],
                     "blank": {}
                 },
@@ -94,7 +94,7 @@ class APIClient:
                     "title": "企业在保障网络安全方面采取的举措",
                     "questionId": "1844296377652350906",
                     "optionIds": [
-                        "1844566961237921794"
+                        random.choice(["1844566961237921792", "1844566961237921793", "1844566961237921794", "1844566961237921795", "1844566961237921796"])
                     ],
                     "blank": {}
                 },
@@ -105,7 +105,7 @@ class APIClient:
                     "title": "企业在保障数据安全方面采取的举措",
                     "questionId": "1844297130567667707",
                     "optionIds": [
-                        "1844567243388751875"
+                        random.choice(["1844567243388751872", "1844567243388751873", "1844567243388751874", "1844567243388751875", "1844567243388751876"])
                     ],
                     "blank": {}
                 },
@@ -116,7 +116,7 @@ class APIClient:
                     "title": "企业对数字化的认识与执行水平情况",
                     "questionId": "1844298014265577408",
                     "optionIds": [
-                        "1844567897058447362"
+                        random.choice(["1844567897058447360", "1844567897058447361", "1844567897058447362", "1844567897058447363", "1844567897058447364", "1844567897058447365"])
                     ],
                     "blank": {}
                 },
@@ -127,7 +127,7 @@ class APIClient:
                     "title": "企业数字化管理制度的建立情况",
                     "questionId": "1844298655008428009",
                     "optionIds": [
-                        "1844570548034736129"
+                        random.choice(["1844570548034736128", "1844570548034736129", "1844570548034736130", "1844570548034736131", "1844570548034736132"])
                     ],
                     "blank": {}
                 },
@@ -138,7 +138,7 @@ class APIClient:
                     "title": "企业在数字化人才建设方面采取的措施",
                     "questionId": "1844299240533266410",
                     "optionIds": [
-                        "1844571859526488066"
+                        random.choice(["1844570548034736128", "1844570548034736129", "1844570548034736130", "1844570548034736131", "1844570548034736132"])
                     ],
                     "blank": {}
                 },
@@ -149,7 +149,7 @@ class APIClient:
                     "title": "企业近三年平均数字化投入总额占营业额的平均比例（企业成立不满三年按照实际成立时长计算年均投入）",
                     "questionId": "1844299717354328011",
                     "optionIds": [
-                        "1844572513741443073"
+                        random.choice(["1844572513741443072", "1844572513741443073", "1844572513741443074", "1844572513741443075", "1844572513741443076"])
                     ],
                     "blank": {}
                 },
@@ -160,7 +160,7 @@ class APIClient:
                     "title": "企业数字化改造后每百元营业收入中综合能源消费量相比于改造前的变化情况",
                     "questionId": "1844300392054263812",
                     "optionIds": [
-                        "1844578599512969216"
+                        random.choice(["1844578556164837376", "1844578599512969216", "1844578619477856256"])
                     ],
                     "blank": {}
                 },
@@ -171,7 +171,7 @@ class APIClient:
                     "title": "企业数字化改造后月均产品合格率相比于改造前的变化情况",
                     "questionId": "1844301970047897613",
                     "optionIds": [
-                        "1844579058487267328"
+                        random.choice(["1844579044516040704", "1844579058487267328", "1844579077122560000"])
                     ],
                     "blank": {}
                 },
@@ -182,7 +182,7 @@ class APIClient:
                     "title": "企业上年度人均营业收入相比于前年变化情况",
                     "questionId": "1844302134414282714",
                     "optionIds": [
-                        "1844579477376602112"
+                        random.choice(["1844579462285496320", "1844579477376602112", "1844579491805007872"])
                     ],
                     "blank": {}
                 },
@@ -193,7 +193,7 @@ class APIClient:
                     "title": "企业上年度每百元营业收入中的成本相比于前年变化情况",
                     "questionId": "1844303187348164615",
                     "optionIds": [
-                        "1844580142404472832"
+                        random.choice(["1844580125358821376", "1844580142404472832", "1844580156207927296"])
                     ],
                     "blank": {}
                 }
@@ -205,7 +205,7 @@ class APIClient:
                     "order": 1,
                     "title": "企业在产品设计场景上数字化应用情况",
                     "scenariosId": "1844295437452972016",
-                    "scenariosLevel": 2
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -213,7 +213,7 @@ class APIClient:
                     "order": 2,
                     "title": "企业在工艺设计场景上数字化应用情况",
                     "scenariosId": "1844281512367886317",
-                    "scenariosLevel": 3
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -221,7 +221,7 @@ class APIClient:
                     "order": 3,
                     "title": "企业在营销管理场景上数字化应用情况",
                     "scenariosId": "1844297130567667718",
-                    "scenariosLevel": 2
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -229,7 +229,7 @@ class APIClient:
                     "order": 4,
                     "title": "企业在售后服务场景上数字化应用情况",
                     "scenariosId": "1844298655008428019",
-                    "scenariosLevel": 3
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -237,7 +237,7 @@ class APIClient:
                     "order": 5,
                     "title": "企业在计划排程场景上数字化应用情况",
                     "scenariosId": "1844297130567667720",
-                    "scenariosLevel": 3
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -245,7 +245,7 @@ class APIClient:
                     "order": 6,
                     "title": "企业在生产管控场景上数字化应用情况",
                     "scenariosId": "1844298014265577421",
-                    "scenariosLevel": 2
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -253,7 +253,7 @@ class APIClient:
                     "order": 7,
                     "title": "企业在质量管理场景上数字化应用情况",
                     "scenariosId": "1844300392054263822",
-                    "scenariosLevel": 3
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -261,7 +261,7 @@ class APIClient:
                     "order": 8,
                     "title": "企业在设备管理场景上数字化应用情况",
                     "scenariosId": "1844321192011263823",
-                    "scenariosLevel": 3
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -269,7 +269,7 @@ class APIClient:
                     "order": 9,
                     "title": "企业在安全生产场景上数字化应用情况",
                     "scenariosId": "1844299240533266424",
-                    "scenariosLevel": 4
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -277,7 +277,7 @@ class APIClient:
                     "order": 10,
                     "title": "企业在能耗管理场景上数字化应用情况",
                     "scenariosId": "1844300392054263825",
-                    "scenariosLevel": 1
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -285,7 +285,7 @@ class APIClient:
                     "order": 11,
                     "title": "企业在采购管理场景上数字化应用情况",
                     "scenariosId": "1844301970047897626",
-                    "scenariosLevel": 2
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -293,7 +293,7 @@ class APIClient:
                     "order": 12,
                     "title": "企业在仓储物流场景上数字化应用情况",
                     "scenariosId": "1844281512367886327",
-                    "scenariosLevel": 3
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -301,7 +301,7 @@ class APIClient:
                     "order": 13,
                     "title": "企业在财务管理场景上数字化应用情况",
                     "scenariosId": "1844303187348164628",
-                    "scenariosLevel": 3
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -309,7 +309,7 @@ class APIClient:
                     "order": 14,
                     "title": "企业在人力资源场景上数字化应用情况",
                     "scenariosId": "1844300392054263829",
-                    "scenariosLevel": 2
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -317,7 +317,7 @@ class APIClient:
                     "order": 15,
                     "title": "企业在协同办公场景上数字化应用情况",
                     "scenariosId": "1844298655008428030",
-                    "scenariosLevel": 3
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 },
                 {
                     "firstModuleName": "数字化经营",
@@ -325,7 +325,7 @@ class APIClient:
                     "order": 16,
                     "title": "企业在决策支持场景上数字化应用情况",
                     "scenariosId": "1844295437452972031",
-                    "scenariosLevel": 3
+                    "scenariosLevel": random.choice([0,1,2,3,4])
                 }
             ]
         }
@@ -352,10 +352,10 @@ class APIClient:
             "sitesurveyIds": [],
             "siteSurveyPeopleList": [
                 {
-                    "rosterName": "doawAOtell6GVPL0D012Bw==",
-                    "rosterAgency": "张三的机构",
-                    "rosterRole": "张三的角色",
-                    "rosterContacts": "Djx5rzQzhrz4ZXDauh8NOg=="
+                    "rosterName": "",
+                    "rosterAgency": "",
+                    "rosterRole": "",
+                    "rosterContacts": ""
                 }
             ],
         }
