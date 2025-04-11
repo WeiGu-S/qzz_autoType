@@ -1,18 +1,15 @@
 import pandas as pd
-import json
 from typing import Iterator, Dict
 from pathlib import Path
-
-from pandas.core import apply
 import random
+
+import utils
 
 class ExcelDataReader:
     def __init__(self, file_path: str):
         self.file_path = Path(file_path)
         self.required_columns = [
             "enterpriseName",
-            "contacts",
-            "telephone",
             "provinceCode",
             "cityCode",
             "districtCode",
@@ -52,15 +49,13 @@ class ExcelDataReader:
             raise ValueError(f"Excel缺少必要列: {', '.join(missing_cols)}")
 
         for _, row in df.iterrows():
-            # 行政编码校验
-            self._validate_geo_code(row['provinceCode'], "provinceCode")
-            self._validate_geo_code(row['cityCode'], "cityCode")
-            self._validate_geo_code(row['districtCode'], "districtCode")
+            contacts = utils.randomData.nameRandomGet()
+            phone = utils.randomData.contactRandomGet()
 
             yield {
                 "enterpriseName": row['enterpriseName'],
-                "contacts": row.get('contacts', ''),
-                "telephone": row.get('telephone', ''),
+                "contacts": contacts,
+                "telephone": phone,
                 "provinceCode": str(row['provinceCode']),
                 "cityCode": str(row['cityCode']),
                 "districtCode": str(row['districtCode']),
