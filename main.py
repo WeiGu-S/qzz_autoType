@@ -1,15 +1,16 @@
+import json
 import logging
 from data_reader import CompanyInfoReader
 from api_client import APIClient
 from logger import setup_logger
 
 # 企业录入处理流程
-def process_company(api: APIClient, company_data: dict) -> bool:
+def process_company(api: APIClient, company_data: json) -> bool:
     logger = logging.getLogger(__name__)
     
     try:
-        logger.info(f"开始处理企业: {company_data['enterpriseName']}")
-        
+        company_info = json.loads(company_data)
+        logger.info(f"开始处理企业: {company_info['enterpriseName']}")       
         # 创建企业
         company_id = api.create_company(company_data)
         if not company_id:
@@ -51,6 +52,10 @@ def main():
                 success_count += 1
             else:
                 failure_count += 1
+                # 如果第一条记录就失败，可能是认证问题，提供更详细的提示
+                if idx == 1 and failure_count == 1:
+                    logger.error("认证失败，请检查配置文件")
+                    break
             
         logger.info(f"处理完成 成功: {success_count} 失败: {failure_count}")
         

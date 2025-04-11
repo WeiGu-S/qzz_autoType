@@ -1,7 +1,10 @@
+from ast import Yield
+from logging import Logger
 import pandas as pd
-from typing import Iterator, Dict
+from typing import Iterator, Dict, Union
 from pathlib import Path
 import random
+import json
 
 import utils
 
@@ -37,7 +40,7 @@ class CompanyInfoReader:
         # if len(code) != length_map[code_type.split('Code')[0].lower()]:
         #     raise ValueError(f"{code_type}长度不符合规范，应为{length_map[code_type.split('Code')[0].lower()]}位数字")
 
-    def read_data(self) -> Iterator[Dict]:
+    def read_data(self) -> Iterator[dict]:
         self.validate_file()
         # 使用header=None读取Excel，因为我们将使用列索引而不是列名
         df = pd.read_excel(self.file_path, engine='openpyxl', header=None)
@@ -65,23 +68,15 @@ class CompanyInfoReader:
             
             # 使用列索引获取数据，处理可能的空值
             enterprise_name = row[self.column_mapping['enterpriseName']] if pd.notnull(row[self.column_mapping['enterpriseName']]) else f"企业{idx}"
-            province_code = str(int(row[self.column_mapping['provinceCode']])) if pd.notnull(row[self.column_mapping['provinceCode']]) else '110000'
-            city_code = str(int(row[self.column_mapping['cityCode']])) if pd.notnull(row[self.column_mapping['cityCode']]) else '110100'
-            district_code = str(int(row[self.column_mapping['districtCode']])) if pd.notnull(row[self.column_mapping['districtCode']]) else '110101'
+            province_code = int(int(row[self.column_mapping['provinceCode']])) if pd.notnull(row[self.column_mapping['provinceCode']]) else '110000'
+            city_code = int(int(row[self.column_mapping['cityCode']])) if pd.notnull(row[self.column_mapping['cityCode']]) else '110100'
+            district_code = int(int(row[self.column_mapping['districtCode']])) if pd.notnull(row[self.column_mapping['districtCode']]) else '110101'
             address = row[self.column_mapping['address']] if pd.notnull(row[self.column_mapping['address']]) else '默认地址'
-            first_industry_id = str(int(row[self.column_mapping['firstIndustryId']])) if pd.notnull(row[self.column_mapping['firstIndustryId']]) else '10057'
-            second_industry_id = str(int(row[self.column_mapping['secondIndustryId']])) if pd.notnull(row[self.column_mapping['secondIndustryId']]) else '359'
-            
-            # # 特殊处理成立时间
-            # establishment_time = ''
-            # if pd.notnull(row[self.column_mapping['establishmentTime']]):
-            #     try:
-            #         establishment_time = pd.to_datetime(row[self.column_mapping['establishmentTime']]).strftime('%Y-%m')
-            #     except:
-            #         establishment_time = '2020-01'  # 默认值
+            first_industry_id = int(int(row[self.column_mapping['firstIndustryId']])) if pd.notnull(row[self.column_mapping['firstIndustryId']]) else '10057'
+            second_industry_id = int(int(row[self.column_mapping['secondIndustryId']])) if pd.notnull(row[self.column_mapping['secondIndustryId']]) else '359'
 
             # 生成随机数据填充其他必要字段
-            yield {
+            company_data = {
                 "enterpriseName": enterprise_name,
                 "contacts": contacts,
                 "telephone": telephone,
@@ -90,13 +85,13 @@ class CompanyInfoReader:
                 "districtCode": district_code,
                 "location": "",
                 "address": address,
-                "firstIndustryId": first_industry_id,
-                "secondIndustryId": second_industry_id,
-                "registeredCapital": str(random.randint(100, 10000)),
+                "firstIndustryId": int(first_industry_id),
+                "secondIndustryId": int(second_industry_id),
+                "registeredCapital": int(random.randint(100, 10000)),
                 "establishmentTime": "",
-                "employeesNum": random.randint(10, 1000),
-                "enterpriseType": random.choice(["国有企业", "民营企业", "外资企业", "合资企业"]),
-                "enterpriseScale": random.choice(["大型", "中型", "小型", "微型"]),
+                "employeesNum": int(random.randint(10, 1000)),
+                "enterpriseType": int(random.choice(["1", "2", "3", "4"])),
+                "enterpriseScale": int(random.choice(["1", "2", "3", "4"])),
                 "mainProducts": random.choice(["电子产品", "机械设备", "化工产品", "纺织品", "食品"]),
                 "businessBenefits":"[{\"2021\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}},{\"2022\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}},{\"2023\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}}]",
                 "systemCertification": random.choice(["数据分类分级 (工业领域)", "数据安全防护体系", "两化融合管理体系", "质量管理体系", "环境管理体系", "能源管理体系", "职业健康安全管理体系", "信息安全管理体系", "数据管理能力成熟度评估模型 (DCMM)","无"]),
@@ -118,9 +113,12 @@ class CompanyInfoReader:
                 "cloudServiceBrandModel":"",
                 "networkUseSituation": random.choice(["宽带","专线","5G","无"]),
                 "networkOperator":"",
-                "digitalTransformFunds": random.choice(["1","2","3","4","5"]),
+                "digitalTransformFunds": int(random.choice(["1","2","3","4","5"])),
                 "planCloudServiceSituation": random.choice(["设备上云","业务系统上云","资源上云（数据）","其他","以上均无"]),
                 "intentionCloudBrandModel":"",
                 "planApplySoftwareType":"",
                 "intentionSoftwareBrandModel":""
             }
+            
+            # 将字典对象转换为JSON字符串后返回
+            yield json.dumps(company_data, ensure_ascii=False)
