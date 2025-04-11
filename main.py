@@ -1,8 +1,9 @@
 import logging
-from data_reader import ExcelDataReader
+from data_reader import CompanyInfoReader
 from api_client import APIClient
 from logger import setup_logger
 
+# 企业录入处理流程
 def process_company(api: APIClient, company_data: dict) -> bool:
     logger = logging.getLogger(__name__)
     
@@ -39,7 +40,7 @@ def main():
     
     try:
         api = APIClient()
-        reader = ExcelDataReader("input_data.xlsx")
+        reader = CompanyInfoReader("input_data.xlsx")
         
         success_count = 0
         failure_count = 0

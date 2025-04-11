@@ -5,25 +5,23 @@ import random
 
 import utils
 
-class ExcelDataReader:
+# 读取Excel文件中的公司信息并包装为 Json 格式
+class CompanyInfoReader:
     def __init__(self, file_path: str):
         self.file_path = Path(file_path)
-        self.required_columns = [
-            "enterpriseName",
-            "provinceCode",
-            "cityCode",
-            "districtCode",
-            "location",
-            "address",
-            "firstIndustryId",
-            "secondIndustryId",
-            "registeredCapital",
-            "establishmentTime",
-            "employeesNum",
-            "enterpriseType",
-            "enterpriseScale",
-            "mainProducts",
-        ]
+        # B列(企业名称)，D列(省代码)，F列(市代码)，H列(区代码)，I列(详细地址)，K列(一级行业)，M列(二级行业)，N列(成立时间)
+        self.column_mapping = {
+            'enterpriseName': 1,  # B列
+            'provinceCode': 3,    # D列
+            'cityCode': 5,        # F列
+            'districtCode': 7,    # H列
+            'address': 8,         # I列
+            'firstIndustryId': 10, # K列
+            'secondIndustryId': 12, # M列
+            #'establishmentTime': 13, # N列
+        }
+        # 保留required_columns用于生成完整的JSON结构
+        self.required_columns = list(self.column_mapping.keys())
 
     def validate_file(self) -> None:
         if not self.file_path.exists():
@@ -41,34 +39,65 @@ class ExcelDataReader:
 
     def read_data(self) -> Iterator[Dict]:
         self.validate_file()
-        df = pd.read_excel(self.file_path, engine='openpyxl')
+        # 使用header=None读取Excel，因为我们将使用列索引而不是列名
+        df = pd.read_excel(self.file_path, engine='openpyxl', header=None)
         
-        # 验证必要字段
-        missing_cols = [col for col in self.required_columns if col not in df.columns]
-        if missing_cols:
-            raise ValueError(f"Excel缺少必要列: {', '.join(missing_cols)}")
+        # 检查Excel是否有足够的列
+        max_col_index = max(self.column_mapping.values())
+        if df.shape[1] <= max_col_index:
+            raise ValueError(f"Excel文件列数不足，需要至少{max_col_index+1}列")
 
-        for _, row in df.iterrows():
-            contacts = utils.randomData.nameRandomGet()
-            phone = utils.randomData.contactRandomGet()
+        # 跳过前三行，从第四行开始读取数据
+        for idx, row in df.iterrows():
+            if idx < 3:  # 跳过前三行
+                continue
+                
+            # 检查是否为空行或所有关键字段都为空
+            if pd.isna(row).all() or (
+                pd.isna(row[self.column_mapping['enterpriseName']]) and 
+                pd.isna(row[self.column_mapping['provinceCode']]) and
+                pd.isna(row[self.column_mapping['firstIndustryId']])
+            ):
+                continue  # 跳过空行
+                
+            contacts = utils.RandomDataGenerator.get_name()
+            telephone = utils.RandomDataGenerator.get_contact()
+            
+            # 使用列索引获取数据，处理可能的空值
+            enterprise_name = row[self.column_mapping['enterpriseName']] if pd.notnull(row[self.column_mapping['enterpriseName']]) else f"企业{idx}"
+            province_code = str(int(row[self.column_mapping['provinceCode']])) if pd.notnull(row[self.column_mapping['provinceCode']]) else '110000'
+            city_code = str(int(row[self.column_mapping['cityCode']])) if pd.notnull(row[self.column_mapping['cityCode']]) else '110100'
+            district_code = str(int(row[self.column_mapping['districtCode']])) if pd.notnull(row[self.column_mapping['districtCode']]) else '110101'
+            address = row[self.column_mapping['address']] if pd.notnull(row[self.column_mapping['address']]) else '默认地址'
+            first_industry_id = str(int(row[self.column_mapping['firstIndustryId']])) if pd.notnull(row[self.column_mapping['firstIndustryId']]) else '10057'
+            second_industry_id = str(int(row[self.column_mapping['secondIndustryId']])) if pd.notnull(row[self.column_mapping['secondIndustryId']]) else '359'
+            
+            # # 特殊处理成立时间
+            # establishment_time = ''
+            # if pd.notnull(row[self.column_mapping['establishmentTime']]):
+            #     try:
+            #         establishment_time = pd.to_datetime(row[self.column_mapping['establishmentTime']]).strftime('%Y-%m')
+            #     except:
+            #         establishment_time = '2020-01'  # 默认值
 
+            # 生成随机数据填充其他必要字段
             yield {
-                "enterpriseName": row['enterpriseName'],
+                "enterpriseName": enterprise_name,
                 "contacts": contacts,
-                "telephone": phone,
-                "provinceCode": str(row['provinceCode']),
-                "cityCode": str(row['cityCode']),
-                "districtCode": str(row['districtCode']),
-                "location": row['location'],
-                "address": row['address'],
-                "firstIndustryId": row['firstIndustryId'],
-                "secondIndustryId": row['secondIndustryId'],
-                "registeredCapital": str(row.get('registeredCapital', '0')),
-                "establishmentTime": pd.to_datetime(row['establishmentTime']).strftime('%Y-%m') if pd.notnull(row['establishmentTime']) else '',
-                "employeesNum": row['employeesNum'],
-                "enterpriseType": row['enterpriseType'],
-                "enterpriseScale": row['enterpriseScale'],
-                "mainProducts": row['mainProducts'],
+                "telephone": telephone,
+                "provinceCode": province_code,
+                "cityCode": city_code,
+                "districtCode": district_code,
+                "location": "",
+                "address": address,
+                "firstIndustryId": first_industry_id,
+                "secondIndustryId": second_industry_id,
+                "registeredCapital": str(random.randint(100, 10000)),
+                "establishmentTime": "",
+                "employeesNum": random.randint(10, 1000),
+                "enterpriseType": random.choice(["国有企业", "民营企业", "外资企业", "合资企业"]),
+                "enterpriseScale": random.choice(["大型", "中型", "小型", "微型"]),
+                "mainProducts": random.choice(["电子产品", "机械设备", "化工产品", "纺织品", "食品"]),
                 "businessBenefits":"[{\"2021\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}},{\"2022\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}},{\"2023\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}}]",
                 "systemCertification": random.choice(["数据分类分级 (工业领域)", "数据安全防护体系", "两化融合管理体系", "质量管理体系", "环境管理体系", "能源管理体系", "职业健康安全管理体系", "信息安全管理体系", "数据管理能力成熟度评估模型 (DCMM)","无"]),
                 "highTechEnterprise": random.choice(["国家级", "省级","市级","无"]),

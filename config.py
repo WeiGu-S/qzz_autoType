@@ -1,4 +1,4 @@
-
+#API请求配置
 class Config:
     API_BASE_URL = "http://apaas.sit.internal.virtueit.net:81"
     COMPANY_CREATE_ENDPOINT = "/v5/qzzservice/biz/enterprise/add"

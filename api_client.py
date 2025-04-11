@@ -6,10 +6,12 @@ import utils
 
 logger = logging.getLogger(__name__)
 
+# 封装API请求
 class APIClient:
     def __init__(self):
         self.base_url = Config.API_BASE_URL
         
+    # 创建企业
     def create_company(self, data: Dict) -> Optional[str]:
         endpoint = Config.COMPANY_CREATE_ENDPOINT
         url = f"{self.base_url}{endpoint}"
@@ -25,10 +27,11 @@ class APIClient:
             logger.error(f"API请求失败: {str(e)}", exc_info=True)
             return None
 
+    # 启动企业诊断
     def start_diagnosis(self, company_id: str) -> Optional[str]:
         endpoint = Config.COMPANY_DIAGNOSIS_ENDPOINT
         url = f"{self.base_url}{endpoint}"
-        data = utils.getAnswerResultJson(company_id)
+        data = utils.RandomDataGenerator.create_answer_result_json(company_id)
 
         try:
             response = requests.post(url, json=data, headers=Config.HEADERS, timeout=30)
@@ -41,10 +44,11 @@ class APIClient:
             logger.error(f"API请求失败: {str(e)}", exc_info=True)
             return None
 
+    # 生成报告
     def generate_report(self, company_id: str, report_id: str) -> bool:
         endpoint = Config.REPORT_GENERATE_ENDPOINT
         url = f"{self.base_url}{endpoint}"
-        data = utils.getReportJson(company_id, report_id)
+        data = utils.RandomDataGenerator.create_report_json(company_id, report_id)
 
         try:
             response = requests.post(url, json=data, headers=Config.HEADERS, timeout=30)

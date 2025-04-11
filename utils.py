@@ -1,11 +1,12 @@
 import random
 
-class randomData:
+class RandomDataGenerator:
     def __init__(self):
         # 初始化随机数据生成器
         self.random = random.Random()
 
-    def nameRandomGet():
+    #随机获取姓名
+    def get_name():
         Name_List = [
             "h65vp9SAHBfROVnb0/vA6A==",
             "guNWPG/Seo6yRClZlLU1jA==",
@@ -16,7 +17,8 @@ class randomData:
         ]
         return random.choice(Name_List)
 
-    def contactRandomGet():
+    #随机获取手机号
+    def get_contact():
         Contact_List = [
             "Djx5rzQzhrz4ZXDauh8NOg==",
             "fGrZh32x7FrTUPxPlBTyRw==",
@@ -26,7 +28,18 @@ class randomData:
         ]
         return random.choice(Contact_List)
 
-    def getAnswerResultJson(company_id):
+    #随机生成场景等级
+    def get_scenario_level():
+        return random.choice([1, 2, 3, 4, 5])
+
+    #随机生成日期
+    def get_date():
+        month = random.randint(1, 4)
+        day = random.randint(1, 28)
+        return f"2025-{month:02d}-{day:02d} 00:00:00"
+
+    #生成诊断结果Json
+    def create_answer_result_json(company_id):
         data = {
                 "enterpriseId": company_id,
                 "digitalScoringQuestionList": [
@@ -203,7 +216,7 @@ class randomData:
                         "order": 1,
                         "title": "企业在产品设计场景上数字化应用情况",
                         "scenariosId": "1844295437452972016",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -211,7 +224,7 @@ class randomData:
                         "order": 2,
                         "title": "企业在工艺设计场景上数字化应用情况",
                         "scenariosId": "1844281512367886317",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -219,7 +232,7 @@ class randomData:
                         "order": 3,
                         "title": "企业在营销管理场景上数字化应用情况",
                         "scenariosId": "1844297130567667718",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -227,7 +240,7 @@ class randomData:
                         "order": 4,
                         "title": "企业在售后服务场景上数字化应用情况",
                         "scenariosId": "1844298655008428019",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -235,7 +248,7 @@ class randomData:
                         "order": 5,
                         "title": "企业在计划排程场景上数字化应用情况",
                         "scenariosId": "1844297130567667720",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -243,7 +256,7 @@ class randomData:
                         "order": 6,
                         "title": "企业在生产管控场景上数字化应用情况",
                         "scenariosId": "1844298014265577421",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -251,7 +264,7 @@ class randomData:
                         "order": 7,
                         "title": "企业在质量管理场景上数字化应用情况",
                         "scenariosId": "1844300392054263822",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -259,7 +272,7 @@ class randomData:
                         "order": 8,
                         "title": "企业在设备管理场景上数字化应用情况",
                         "scenariosId": "1844321192011263823",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -267,7 +280,7 @@ class randomData:
                         "order": 9,
                         "title": "企业在安全生产场景上数字化应用情况",
                         "scenariosId": "1844299240533266424",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -275,7 +288,7 @@ class randomData:
                         "order": 10,
                         "title": "企业在能耗管理场景上数字化应用情况",
                         "scenariosId": "1844300392054263825",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -283,7 +296,7 @@ class randomData:
                         "order": 11,
                         "title": "企业在采购管理场景上数字化应用情况",
                         "scenariosId": "1844301970047897626",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -291,7 +304,7 @@ class randomData:
                         "order": 12,
                         "title": "企业在仓储物流场景上数字化应用情况",
                         "scenariosId": "1844281512367886327",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -299,7 +312,7 @@ class randomData:
                         "order": 13,
                         "title": "企业在财务管理场景上数字化应用情况",
                         "scenariosId": "1844303187348164628",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -307,7 +320,7 @@ class randomData:
                         "order": 14,
                         "title": "企业在人力资源场景上数字化应用情况",
                         "scenariosId": "1844300392054263829",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -315,7 +328,7 @@ class randomData:
                         "order": 15,
                         "title": "企业在协同办公场景上数字化应用情况",
                         "scenariosId": "1844298655008428030",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     },
                     {
                         "firstModuleName": "数字化经营",
@@ -323,13 +336,14 @@ class randomData:
                         "order": 16,
                         "title": "企业在决策支持场景上数字化应用情况",
                         "scenariosId": "1844295437452972031",
-                        "scenariosLevel": random.choice([0,1,2,3,4])
+                        "scenariosLevel": RandomDataGenerator.get_scenario_level()
                     }
                 ]
             }
         return data
 
-    def getReportJson(company_id: str, report_id: str) -> dict:
+    #生成诊断报告 Json
+    def create_report_json(company_id: str, report_id: str) -> dict:
         # 定义机构列表
         agency_list = [
             '上海瀚海检测技术股份有限公司',
@@ -339,9 +353,10 @@ class randomData:
             '迅翎企业服务（上海）有限公司',
             '上海国信达检测技术有限公司'
         ]
-
-        rosterName = randomData.nameRandomGet()
-        rosterContacts = randomData.contactRandomGet()
+        rosterAgency = random.choice(agency_list)
+        rosterName = RandomDataGenerator.get_name()
+        rosterContacts = RandomDataGenerator.get_contact()
+        sitesurveyDate = RandomDataGenerator.get_date()
        
         data = {
             "enterpriseId": company_id,
@@ -356,13 +371,13 @@ class randomData:
             "intelligentdeviceIds": [],
             "industrialsoftware": "",
             "industrialsoftwareIds": [],
-            "sitesurveyDate": "2025-04-09\n00:00:00",
+            "sitesurveyDate": sitesurveyDate,
             "sitesurvey": "ok", 
             "sitesurveyIds": [],
             "siteSurveyPeopleList": [
                 {
                     "rosterName": rosterName,
-                    "rosterAgency": random.choice(agency_list),
+                    "rosterAgency": rosterAgency,
                     "rosterRole": "调查员",
                     "rosterContacts": rosterContacts
                 }
