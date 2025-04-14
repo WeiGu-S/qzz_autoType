@@ -29,8 +29,8 @@ class APIClient:
         logger.info(f"发送创建企业请求: {url}")
         
         # 解析JSON字符串为Python对象
-        data_obj = json.loads(data) if isinstance(data, str) else data
-        logger.info(f"请求数据: {data_obj}")
+        #data_obj = json.loads(data) if isinstance(data, str) else data
+        #logger.info(f"请求数据: {data_obj}")
         
         # 检查认证信息是否有效
         if not self._check_auth():
@@ -43,10 +43,10 @@ class APIClient:
         
         try:
             # 使用data参数而不是json参数，确保请求体格式与Postman一致
-            json_data = json.dumps(data_obj) if not isinstance(data, str) else data
+            #json_data = json.dumps(data_obj) if not isinstance(data, str) else data
             response = requests.post(
                 url, 
-                data=json_data, 
+                data=data, 
                 headers=headers, 
                 timeout=30
             )
@@ -87,7 +87,7 @@ class APIClient:
         url = f"{self.base_url}{endpoint}"
         data = utils.RandomDataGenerator.create_answer_result_json(company_id)
         logger.info(f"发送诊断请求: {url}")
-        logger.info(f"请求数据: {data}")
+        #logger.info(f"请求数据: {data}")
         
         # 检查认证信息是否有效
         if not self._check_auth():
@@ -136,7 +136,7 @@ class APIClient:
         url = f"{self.base_url}{endpoint}"
         data = utils.RandomDataGenerator.create_report_json(company_id, report_id)
         logger.info(f"发送报告生成请求: {url}")
-        logger.info(f"请求数据: {data}")
+        #logger.info(f"请求数据: {data}")
         
         # 检查认证信息是否有效
         if not self._check_auth():

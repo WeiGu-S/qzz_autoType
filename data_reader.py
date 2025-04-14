@@ -40,7 +40,7 @@ class CompanyInfoReader:
         # if len(code) != length_map[code_type.split('Code')[0].lower()]:
         #     raise ValueError(f"{code_type}长度不符合规范，应为{length_map[code_type.split('Code')[0].lower()]}位数字")
 
-    def read_data(self) -> Iterator[dict]:
+    def read_data(self) -> Iterator[Dict]:
         self.validate_file()
         # 使用header=None读取Excel，因为我们将使用列索引而不是列名
         df = pd.read_excel(self.file_path, engine='openpyxl', header=None)
@@ -68,15 +68,15 @@ class CompanyInfoReader:
             
             # 使用列索引获取数据，处理可能的空值
             enterprise_name = row[self.column_mapping['enterpriseName']] if pd.notnull(row[self.column_mapping['enterpriseName']]) else f"企业{idx}"
-            province_code = int(int(row[self.column_mapping['provinceCode']])) if pd.notnull(row[self.column_mapping['provinceCode']]) else '110000'
-            city_code = int(int(row[self.column_mapping['cityCode']])) if pd.notnull(row[self.column_mapping['cityCode']]) else '110100'
-            district_code = int(int(row[self.column_mapping['districtCode']])) if pd.notnull(row[self.column_mapping['districtCode']]) else '110101'
+            province_code = int(row[self.column_mapping['provinceCode']]) if pd.notnull(row[self.column_mapping['provinceCode']]) else 110000
+            city_code = int(row[self.column_mapping['cityCode']]) if pd.notnull(row[self.column_mapping['cityCode']]) else 110100
+            district_code = int(row[self.column_mapping['districtCode']]) if pd.notnull(row[self.column_mapping['districtCode']]) else 110101
             address = row[self.column_mapping['address']] if pd.notnull(row[self.column_mapping['address']]) else '默认地址'
-            first_industry_id = int(int(row[self.column_mapping['firstIndustryId']])) if pd.notnull(row[self.column_mapping['firstIndustryId']]) else '10057'
-            second_industry_id = int(int(row[self.column_mapping['secondIndustryId']])) if pd.notnull(row[self.column_mapping['secondIndustryId']]) else '359'
+            first_industry_id = int(row[self.column_mapping['firstIndustryId']]) if pd.notnull(row[self.column_mapping['firstIndustryId']]) else 10057
+            second_industry_id = int(row[self.column_mapping['secondIndustryId']]) if pd.notnull(row[self.column_mapping['secondIndustryId']]) else 359
 
-            # 生成随机数据填充其他必要字段
-            company_data = {
+            # 生成企业数据字典
+            yield {
                 "enterpriseName": enterprise_name,
                 "contacts": contacts,
                 "telephone": telephone,
@@ -85,20 +85,20 @@ class CompanyInfoReader:
                 "districtCode": district_code,
                 "location": "",
                 "address": address,
-                "firstIndustryId": int(first_industry_id),
-                "secondIndustryId": int(second_industry_id),
-                "registeredCapital": int(random.randint(100, 10000)),
+                "firstIndustryId": first_industry_id,
+                "secondIndustryId": second_industry_id,
+                "registeredCapital": random.randint(100, 10000),
                 "establishmentTime": "",
-                "employeesNum": int(random.randint(10, 1000)),
-                "enterpriseType": int(random.choice(["1", "2", "3", "4"])),
-                "enterpriseScale": int(random.choice(["1", "2", "3", "4"])),
+                "employeesNum": random.randint(10, 1000),
+                "enterpriseType": random.randint(1, 4),
+                "enterpriseScale": random.randint(1, 4),
                 "mainProducts": random.choice(["电子产品", "机械设备", "化工产品", "纺织品", "食品"]),
                 "businessBenefits":"[{\"2021\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}},{\"2022\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}},{\"2023\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}}]",
                 "systemCertification": random.choice(["数据分类分级 (工业领域)", "数据安全防护体系", "两化融合管理体系", "质量管理体系", "环境管理体系", "能源管理体系", "职业健康安全管理体系", "信息安全管理体系", "数据管理能力成熟度评估模型 (DCMM)","无"]),
-                "highTechEnterprise": int(random.choice(["1", "2","3","4"])),
-                "intelligentManufacturingDemonstrationFactory": int(random.choice(["1", "2","3","4"])),
-                "industrialInternetBenchmarkFactory": int(random.choice(["1", "2","3"])),
-                "specializedInnovativeLittleGiant": int(random.choice(["1", "2","3"])),
+                "highTechEnterprise": random.randint(1, 4),
+                "intelligentManufacturingDemonstrationFactory": random.randint(1, 4),
+                "industrialInternetBenchmarkFactory": random.randint(1, 3),
+                "specializedInnovativeLittleGiant": random.randint(1, 3),
                 "applyResearchDevelopDesignSoftware": random.choice(["CAD","CAE","DBOM","CAM","数字孪生","其他","以上均无"]),
                 "designSoftwareBrandModel":"",
                 "applyProductionManufacturingSoftware":random.choice(["MES","APS","PLM","PDM","其他","以上均无"]),
@@ -113,12 +113,9 @@ class CompanyInfoReader:
                 "cloudServiceBrandModel":"",
                 "networkUseSituation": random.choice(["宽带","专线","5G","无"]),
                 "networkOperator":"",
-                "digitalTransformFunds": int(random.choice(["1","2","3","4","5"])),
+                "digitalTransformFunds": random.randint(1, 5),
                 "planCloudServiceSituation": random.choice(["设备上云","业务系统上云","资源上云（数据）","其他","以上均无"]),
                 "intentionCloudBrandModel":"",
                 "planApplySoftwareType":random.choice(["研发设计（CAD等）","生产管理（MES等）","运营管理（ERP等）","质量管理（QMS等）","仓储物流（WMS等）","其他","以上均无"]),
                 "intentionSoftwareBrandModel":""
             }
-            
-            # 将字典对象转换为JSON字符串后返回
-            yield json.dumps(company_data, ensure_ascii=False)
