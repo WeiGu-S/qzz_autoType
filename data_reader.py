@@ -95,10 +95,10 @@ class CompanyInfoReader:
                 "mainProducts": random.choice(["电子产品", "机械设备", "化工产品", "纺织品", "食品"]),
                 "businessBenefits":"[{\"2021\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}},{\"2022\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}},{\"2023\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}}]",
                 "systemCertification": random.choice(["数据分类分级 (工业领域)", "数据安全防护体系", "两化融合管理体系", "质量管理体系", "环境管理体系", "能源管理体系", "职业健康安全管理体系", "信息安全管理体系", "数据管理能力成熟度评估模型 (DCMM)","无"]),
-                "highTechEnterprise": random.choice(["国家级", "省级","市级","无"]),
-                "intelligentManufacturingDemonstrationFactory": random.choice(["国家级", "省级","市级","无"]),
-                "industrialInternetBenchmarkFactory": random.choice(["省级","市级","无"]),
-                "specializedInnovativeLittleGiant": random.choice(["国家级", "省级","无"]),
+                "highTechEnterprise": int(random.choice(["1", "2","3","4"])),
+                "intelligentManufacturingDemonstrationFactory": int(random.choice(["1", "2","3","4"])),
+                "industrialInternetBenchmarkFactory": int(random.choice(["1", "2","3"])),
+                "specializedInnovativeLittleGiant": int(random.choice(["1", "2","3"])),
                 "applyResearchDevelopDesignSoftware": random.choice(["CAD","CAE","DBOM","CAM","数字孪生","其他","以上均无"]),
                 "designSoftwareBrandModel":"",
                 "applyProductionManufacturingSoftware":random.choice(["MES","APS","PLM","PDM","其他","以上均无"]),
@@ -116,7 +116,7 @@ class CompanyInfoReader:
                 "digitalTransformFunds": int(random.choice(["1","2","3","4","5"])),
                 "planCloudServiceSituation": random.choice(["设备上云","业务系统上云","资源上云（数据）","其他","以上均无"]),
                 "intentionCloudBrandModel":"",
-                "planApplySoftwareType":"",
+                "planApplySoftwareType":random.choice(["研发设计（CAD等）","生产管理（MES等）","运营管理（ERP等）","质量管理（QMS等）","仓储物流（WMS等）","其他","以上均无"]),
                 "intentionSoftwareBrandModel":""
             }
             
