@@ -6,7 +6,8 @@ from pathlib import Path
 import random
 import json
 
-import utils
+import data_random_generator
+import json_generator
 
 # 读取Excel文件中的公司信息并包装为 Json 格式
 class CompanyInfoReader:
@@ -14,14 +15,15 @@ class CompanyInfoReader:
         self.file_path = Path(file_path)
         # B列(企业名称)，D列(省代码)，F列(市代码)，H列(区代码)，I列(详细地址)，K列(一级行业)，M列(二级行业)，N列(成立时间)
         self.column_mapping = {
-            'enterpriseName': 1,  # B列
-            'provinceCode': 3,    # D列
-            'cityCode': 5,        # F列
-            'districtCode': 7,    # H列
-            'address': 8,         # I列
-            'firstIndustryId': 10, # K列
-            'secondIndustryId': 12, # M列
-            #'establishmentTime': 13, # N列
+            'enterpriseName': 1,  # B列(企业名称)
+            'provinceCode': 3,    # D列(省代码)
+            'cityCode': 5,        # F列(市代码)
+            'districtCode': 7,    # H列(区代码)
+            'location': 9,        # J列(位置)
+            'address': 11,         # L列(详细地址)
+            'firstIndustryId': 13, # N列(一级行业)
+            'secondIndustryId': 15, # P列(二级行业)
+            #'establishmentTime': 13, # N列(成立时间)
         }
         # 保留required_columns用于生成完整的JSON结构
         self.required_columns = list(self.column_mapping.keys())
@@ -63,59 +65,15 @@ class CompanyInfoReader:
             ):
                 continue  # 跳过空行
                 
-            contacts = utils.RandomDataGenerator.get_name()
-            telephone = utils.RandomDataGenerator.get_contact()
-            
             # 使用列索引获取数据，处理可能的空值
             enterprise_name = row[self.column_mapping['enterpriseName']] if pd.notnull(row[self.column_mapping['enterpriseName']]) else f"企业{idx}"
             province_code = int(row[self.column_mapping['provinceCode']]) if pd.notnull(row[self.column_mapping['provinceCode']]) else 110000
             city_code = int(row[self.column_mapping['cityCode']]) if pd.notnull(row[self.column_mapping['cityCode']]) else 110100
             district_code = int(row[self.column_mapping['districtCode']]) if pd.notnull(row[self.column_mapping['districtCode']]) else 110101
+            location = row[self.column_mapping['location']] if pd.notnull(row[self.column_mapping['location']]) else '默认位置'
             address = row[self.column_mapping['address']] if pd.notnull(row[self.column_mapping['address']]) else '默认地址'
             first_industry_id = int(row[self.column_mapping['firstIndustryId']]) if pd.notnull(row[self.column_mapping['firstIndustryId']]) else 10057
             second_industry_id = int(row[self.column_mapping['secondIndustryId']]) if pd.notnull(row[self.column_mapping['secondIndustryId']]) else 359
 
-            # 生成企业数据字典
-            yield {
-                "enterpriseName": enterprise_name,
-                "contacts": contacts,
-                "telephone": telephone,
-                "provinceCode": province_code,
-                "cityCode": city_code,
-                "districtCode": district_code,
-                "location": "",
-                "address": address,
-                "firstIndustryId": first_industry_id,
-                "secondIndustryId": second_industry_id,
-                "registeredCapital": random.randint(100, 10000),
-                "establishmentTime": "",
-                "employeesNum": random.randint(10, 1000),
-                "enterpriseType": random.randint(1, 4),
-                "enterpriseScale": random.randint(1, 4),
-                "mainProducts": random.choice(["电子产品", "机械设备", "化工产品", "纺织品", "食品"]),
-                "businessBenefits":"[{\"2021\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}},{\"2022\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}},{\"2023\":{\"totalAssets\":\"\",\"income\":\"\",\"profit\":\"\"}}]",
-                "systemCertification": random.choice(["数据分类分级 (工业领域)", "数据安全防护体系", "两化融合管理体系", "质量管理体系", "环境管理体系", "能源管理体系", "职业健康安全管理体系", "信息安全管理体系", "数据管理能力成熟度评估模型 (DCMM)","无"]),
-                "highTechEnterprise": random.randint(1, 4),
-                "intelligentManufacturingDemonstrationFactory": random.randint(1, 4),
-                "industrialInternetBenchmarkFactory": random.randint(1, 3),
-                "specializedInnovativeLittleGiant": random.randint(1, 3),
-                "applyResearchDevelopDesignSoftware": random.choice(["CAD","CAE","DBOM","CAM","数字孪生","其他","以上均无"]),
-                "designSoftwareBrandModel":"",
-                "applyProductionManufacturingSoftware":random.choice(["MES","APS","PLM","PDM","其他","以上均无"]),
-                "manufacturingSoftwareBrandModel":"",
-                "applyQualityManagementSoftware":random.choice(["QMS","LIMS","其他","以上均无"]),
-                "qualitySoftwareBrandModel":"",
-                "applyOperationsManagementSoftware":random.choice(["ERP","CRM","SRM","SCM","OA","BI","其他","以上均无"]),
-                "operationsSoftwareBrandModel":"",
-                "applyWarehouseLogisticsSoftware":random.choice(["WMS","其他","以上均无"]),
-                "logisticsSoftwareBrandModel":"",
-                "applyCloudService": random.choice(["公有云","私有云","混合云","无"]),
-                "cloudServiceBrandModel":"",
-                "networkUseSituation": random.choice(["宽带","专线","5G","无"]),
-                "networkOperator":"",
-                "digitalTransformFunds": random.randint(1, 5),
-                "planCloudServiceSituation": random.choice(["设备上云","业务系统上云","资源上云（数据）","其他","以上均无"]),
-                "intentionCloudBrandModel":"",
-                "planApplySoftwareType":random.choice(["研发设计（CAD等）","生产管理（MES等）","运营管理（ERP等）","质量管理（QMS等）","仓储物流（WMS等）","其他","以上均无"]),
-                "intentionSoftwareBrandModel":""
-            }
+            # 调用json_generator中的方法生成企业数据字典
+            yield json_generator.ApiJsonGenerator.create_company_info_json(enterprise_name, province_code, city_code, district_code, location, address, first_industry_id, second_industry_id)

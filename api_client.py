@@ -1,9 +1,14 @@
 import json
+from math import fabs
+from pandas.core.computation.ops import Op
 import requests
 import logging
-from typing import Optional, Dict
+from typing import Optional
 from config import Config
-import utils
+import data_random_generator
+import time
+
+import json_generator
 
 logger = logging.getLogger(__name__)
 
@@ -28,34 +33,18 @@ class APIClient:
         url = f"{self.base_url}{endpoint}"
         logger.info(f"发送创建企业请求: {url}")
         
-        # 解析JSON字符串为Python对象
-        #data_obj = json.loads(data) if isinstance(data, str) else data
-        #logger.info(f"请求数据: {data_obj}")
-        
         # 检查认证信息是否有效
         if not self._check_auth():
             logger.error("认证信息无效，请更新配置文件中的认证信息")
             return None
-        
-        # 记录完整请求头信息用于调试
-        headers = Config.HEADERS.copy()
-        logger.debug(f"请求头信息: {headers}")
-        
+             
         try:
-            # 使用data参数而不是json参数，确保请求体格式与Postman一致
-            #json_data = json.dumps(data_obj) if not isinstance(data, str) else data
-            response = requests.post(
-                url, 
-                data=data, 
-                headers=headers, 
-                timeout=30
-            )
-            
-            logger.info(f"API响应状态码: {response.status_code}")
+            response = requests.post(url, data=data, headers=Config.HEADERS, timeout=30)
+            #logger.info(f"企业创建API响应状态码: {response.json().get('code')}")
             
             try:
                 response_json = response.json()
-                logger.info(f"API响应内容: {response_json}")
+                logger.info(f"企业创建API响应内容: {response_json}")
                 
                 if response.status_code != 200 or response_json.get('code') != 200:
                     error_msg = response_json.get('msg', '未知错误')
@@ -66,7 +55,7 @@ class APIClient:
                         logger.error("认证令牌可能已过期，请更新配置文件中的认证信息")
                     return None
             except ValueError as e:
-                logger.error(f"API响应不是有效的JSON: {response.text}")
+                logger.error(f"企业创建API响应不是有效的JSON: {response.text}")
                 return None
                 
             response.raise_for_status()
@@ -85,7 +74,7 @@ class APIClient:
     def start_diagnosis(self, company_id: str) -> Optional[str]:
         endpoint = Config.COMPANY_DIAGNOSIS_ENDPOINT
         url = f"{self.base_url}{endpoint}"
-        data = utils.RandomDataGenerator.create_answer_result_json(company_id)
+        data = json_generator.ApiJsonGenerator.create_answer_result_json(company_id)
         logger.info(f"发送诊断请求: {url}")
         #logger.info(f"请求数据: {data}")
         
@@ -93,88 +82,122 @@ class APIClient:
         if not self._check_auth():
             logger.error("认证信息无效，请更新配置文件中的认证信息")
             return None
-            
-        # 记录完整请求头信息用于调试
-        headers = Config.HEADERS.copy()
-        logger.debug(f"请求头信息: {headers}")
 
         try:
-            # 使用data参数而不是json参数，确保请求体格式与Postman一致
             json_data = json.dumps(data)
-            response = requests.post(
-                url, 
-                data=json_data, 
-                headers=headers, 
-                timeout=30
-            )
+            response = requests.post(url, data=json_data, headers=Config.HEADERS, timeout=30)
             
-            logger.info(f"API响应状态码: {response.status_code}")
+            #logger.info(f"企业诊断API响应状态码: {response.json().get('code')}")
             
             try:
                 response_json = response.json()
-                logger.info(f"API响应内容: {response_json}")
+                logger.info(f"企业诊断API响应内容: {response_json}")
                 
                 if response.status_code != 200 or response_json.get('code') != 200:
                     error_msg = response_json.get('msg', '未知错误')
-                    logger.error(f"API响应错误: {error_msg}")
+                    logger.error(f"企业诊断API响应错误: {error_msg}")
                     return None
                     
                 return response_json.get('data')
             except ValueError as e:
-                logger.error(f"API响应不是有效的JSON: {response.text}")
+                logger.error(f"企业诊断API响应不是有效的JSON: {response.text}")
                 return None
         except requests.exceptions.Timeout:
-            logger.error(f"API请求超时: {url}", exc_info=True)
+            logger.error(f"企业诊断API请求超时: {url}", exc_info=True)
             return None
         except requests.exceptions.RequestException as e:
-            logger.error(f"API请求失败: {str(e)}", exc_info=True)
+            logger.error(f"企业诊断API请求失败: {str(e)}", exc_info=True)
             return None
 
     # 生成报告
-    def generate_report(self, company_id: str, report_id: str) -> bool:
+    def generate_report(self, company_id: str, diagnosis_id: str) -> Optional[str]:
         endpoint = Config.REPORT_GENERATE_ENDPOINT
         url = f"{self.base_url}{endpoint}"
-        data = utils.RandomDataGenerator.create_report_json(company_id, report_id)
-        logger.info(f"发送报告生成请求: {url}")
-        #logger.info(f"请求数据: {data}")
+        data = json_generator.ApiJsonGenerator.create_report_json(company_id, diagnosis_id)
+        logger.info(f"发送诊断报告生成请求: {url}")
+        logger.info(f"请求数据: {data}")
         
         # 检查认证信息是否有效
         if not self._check_auth():
             logger.error("认证信息无效，请更新配置文件中的认证信息")
             return False
             
-        # 记录完整请求头信息用于调试
-        headers = Config.HEADERS.copy()
-        logger.debug(f"请求头信息: {headers}")
-
         try:
             # 使用data参数而不是json参数，确保请求体格式与Postman一致
             json_data = json.dumps(data)
-            response = requests.post(
-                url, 
-                data=json_data, 
-                headers=headers, 
-                timeout=30
-            )
+            response = requests.post(url, data=json_data, headers=Config.HEADERS, timeout=30)
             
-            logger.info(f"API响应状态码: {response.status_code}")
+           #logger.info(f"诊断报告API响应状态码: {response.json().get('code')}")
             
             try:
                 response_json = response.json()
-                logger.info(f"API响应内容: {response_json}")
+                logger.info(f"诊断报告API响应内容: {response_json}")
                 
                 if response.status_code != 200 or response_json.get('code') != 200:
                     error_msg = response_json.get('msg', '未知错误')
-                    logger.error(f"API响应错误: {error_msg}")
+                    logger.error(f"诊断报告API响应错误: {error_msg}")
                     return False
                     
-                return True
+                return response_json.get('data')
             except ValueError as e:
-                logger.error(f"API响应不是有效的JSON: {response.text}")
+                logger.error(f"诊断报告API响应不是有效的JSON: {response.text}")
                 return False
         except requests.exceptions.Timeout:
-            logger.error(f"API请求超时: {url}", exc_info=True)
+            logger.error(f"诊断报告API请求超时: {url}", exc_info=True)
             return False
         except requests.exceptions.RequestException as e:
-            logger.error(f"API请求失败: {str(e)}", exc_info=True)
+            logger.error(f"诊断报告API请求失败: {str(e)}", exc_info=True)
+            return False
+
+    #报告生成轮询
+    def poll_report_status(self, report_id: str) -> bool:
+        endpoint = Config.POLLING_ENDPOINT
+        url = f"{self.base_url}{endpoint}"
+        headers = Config.HEADERS.copy()
+        data = {
+            "jobKey": report_id
+        }
+
+        logger.info(f"轮询 AI 报告生成状态: {url}")
+        logger.info(f"请求数据: {data}")
+        try:            
+            # 发起POST请求获取报告状态
+            json_data = json.dumps(data)
+            response = requests.post(url, data=json_data, headers=headers, timeout=30)
+            #logger.info(f"API响应状态码: {response.json().get('code')}")
+            logger.info(f"API响应内容: {response.text}")
+            if not response or not response.json():
+                logger.error("获取AI报告状态失败: 无效的API响应")
+                return False
+                
+            response_data = response.json()
+            # 从响应数据中获取状态值，默认为空字符串
+            status = response_data.get("data", {}).get("status", "")
+            
+            # 轮询直到报告状态变为"1"或"-1"(1：成功，-1：失败， 0：生成中)
+            while status == 0:
+                #logger.info(f"AI 报告状态: {status}")
+                logger.info("AI 报告生成中，正在等待...")
+                time.sleep(20)  # 每20秒轮询一次
+                response = requests.post(url, data=json_data, headers=headers, timeout=30)
+                if not response or not response.json():
+                    logger.error("获取 AI 报告状态失败: 无效的API响应")
+                    return False
+                    
+                response_data = response.json()
+                status = response_data.get("data", {}).get("status", "")
+            
+            # 最终报告状态
+            if status == 1:
+                logger.info("AI 报告生成成功")
+                return True
+            else:
+                logger.error("AI 报告生成失败")
+                return False
+            
+        except requests.exceptions.Timeout:
+            logger.error(f"AI 报告轮询API请求超时: {url}", exc_info=True)
+            return False
+        except requests.exceptions.RequestException as e:
+            logger.error(f" AI 报告轮询API请求失败: {str(e)}", exc_info=True)
             return False

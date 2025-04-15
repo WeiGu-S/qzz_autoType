@@ -12,6 +12,7 @@
 ```
 Content-Type: application/json
 Authorization: Bearer {access_token}
+Cookie:{cookie}
 ```
 
 ## 环境要求
@@ -32,15 +33,18 @@ python main.py
 
 ## 数据文件格式要求
 - 必须包含字段：
-  - 企业名称(company_name)
-  - 注册资本(registered_capital)
-  - 成立日期(establish_date)
-- 字段格式要求：
-  - 注册资本需为数字格式
-  - 成立日期需为YYYY-MM-DD格式
+  - 企业名称(enterpriseName)
+  - 省市区(province, city, district)
+  - 所属行业(first_industry_name, second_industry_name)
+  - 地址(address)
 - 建议使用Excel 2010+格式(.xlsx)
 - 文件需命名为input_data.xlsx并放置在项目根目录
 
 ## 日志查看
 - 日志文件保存在logs/process.log
 - 保留最近3个日志备份，单个日志最大50MB
+
+## 手机号和姓名随机生成
+- 随机生成姓名和手机号
+- 使用 CryptoJS 对姓名和手机号进行加密
+
