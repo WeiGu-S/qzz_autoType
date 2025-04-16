@@ -22,21 +22,21 @@ def process_company(api: APIClient, company_data: json) -> bool:
     # 创建企业，获取企业ID
     company_id = api.create_company(company_data)
     if not company_id:
-        logger.error("企业创建失败")
+        logger.error("*****企业创建失败*****")
         return False
         
     # 启动诊断,获取诊断ID
     diagnosis_id = api.start_diagnosis(company_id)
     if not diagnosis_id:
-        logger.error(f"企业诊断失败: {company_id}")
+        logger.error(f"*****企业诊断失败:  {company_info['enterpriseName']}，诊断 ID:{diagnosis_id}*****")
         return False
     
     # 生成报告，获取报告ID
     report_id = api.generate_report(company_id, diagnosis_id)
     if not report_id:
-        logger.error(f"{company_info['enterpriseName']}诊断报告生成失败，报告ID: {report_id}")
+        logger.error(f"*****{company_info['enterpriseName']}诊断报告生成失败，报告ID: {report_id}*****")
     else:
-        logger.info(f"{company_info['enterpriseName']}诊断报告生成成功，报告ID: {report_id}")
+        logger.info(f"*****{company_info['enterpriseName']}诊断报告生成成功，报告ID: {report_id}*****")
 
     # 轮询报告状态
     logger.info(f"----开始轮询 AI 报告生成状态----")
@@ -87,7 +87,7 @@ def main():
     except Exception as e:
         logger.error(f"主程序异常: {str(e)}", exc_info=True)
     
-    logger.info(f"处理完成 成功: {success_count} 失败: {failure_count}")
+    logger.info(f"Excel处理完成 成功: {success_count} 失败: {failure_count}")
     if failure_count > 0:
         logger.info(f"失败记录: 第{', '.join(str(record) for record in failure_record)}行录入失败")
 if __name__ == "__main__":

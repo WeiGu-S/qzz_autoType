@@ -32,6 +32,7 @@ class APIClient:
         endpoint = Config.COMPANY_CREATE_ENDPOINT
         url = f"{self.base_url}{endpoint}"
         logger.info(f"发送创建企业请求: {url}")
+        logger.debug(f"创建企业请求数据: {data}")
         
         # 检查认证信息是否有效
         if not self._check_auth():
@@ -40,7 +41,6 @@ class APIClient:
              
         try:
             response = requests.post(url, data=data, headers=Config.HEADERS, timeout=30)
-            #logger.info(f"企业创建API响应状态码: {response.json().get('code')}")
             
             try:
                 response_json = response.json()
@@ -50,9 +50,9 @@ class APIClient:
                     error_msg = response_json.get('msg', '未知错误')
                     logger.error(f"API响应错误: {error_msg}")
                     
-                    # 如果是认证失败，提示更新认证信息
-                    if "认证失败" in error_msg or "无法访问" in error_msg:
-                        logger.error("认证令牌可能已过期，请更新配置文件中的认证信息")
+                    # # 如果是认证失败，提示更新认证信息
+                    # if "认证失败" in error_msg or "无法访问" in error_msg:
+                    #     logger.error("认证令牌可能已过期，请更新配置文件中的认证信息")
                     return None
             except ValueError as e:
                 logger.error(f"企业创建API响应不是有效的JSON: {response.text}")
@@ -76,7 +76,7 @@ class APIClient:
         url = f"{self.base_url}{endpoint}"
         data = json_generator.ApiJsonGenerator.create_answer_result_json(company_id)
         logger.info(f"发送诊断请求: {url}")
-        #logger.info(f"请求数据: {data}")
+        logger.info(f"企业诊断请求数据: {data}")
         
         # 检查认证信息是否有效
         if not self._check_auth():
@@ -86,12 +86,10 @@ class APIClient:
         try:
             json_data = json.dumps(data)
             response = requests.post(url, data=json_data, headers=Config.HEADERS, timeout=30)
-            
-            #logger.info(f"企业诊断API响应状态码: {response.json().get('code')}")
-            
+                        
             try:
                 response_json = response.json()
-                logger.info(f"企业诊断API响应内容: {response_json}")
+                logger.debug(f"企业诊断API响应内容: {response_json}")
                 
                 if response.status_code != 200 or response_json.get('code') != 200:
                     error_msg = response_json.get('msg', '未知错误')
@@ -115,7 +113,7 @@ class APIClient:
         url = f"{self.base_url}{endpoint}"
         data = json_generator.ApiJsonGenerator.create_report_json(company_id, diagnosis_id)
         logger.info(f"发送诊断报告生成请求: {url}")
-        logger.info(f"请求数据: {data}")
+        logger.debug(f"诊断报告请求数据: {data}")
         
         # 检查认证信息是否有效
         if not self._check_auth():
@@ -159,13 +157,12 @@ class APIClient:
         }
 
         logger.info(f"轮询 AI 报告生成状态: {url}")
-        logger.info(f"请求数据: {data}")
+        logger.debug(f"AI 报告请求数据: {data}")
         try:            
             # 发起POST请求获取报告状态
             json_data = json.dumps(data)
             response = requests.post(url, data=json_data, headers=headers, timeout=30)
-            #logger.info(f"API响应状态码: {response.json().get('code')}")
-            logger.info(f"API响应内容: {response.text}")
+
             if not response or not response.json():
                 logger.error("获取AI报告状态失败: 无效的API响应")
                 return False
@@ -177,7 +174,7 @@ class APIClient:
             # 轮询直到报告状态变为"1"或"-1"(1：成功，-1：失败， 0：生成中)
             while status == 0:
                 #logger.info(f"AI 报告状态: {status}")
-                logger.info("AI 报告生成中，正在等待...")
+                logger.info("....AI 报告生成中，正在等待....")
                 time.sleep(20)  # 每20秒轮询一次
                 response = requests.post(url, data=json_data, headers=headers, timeout=30)
                 if not response or not response.json():
@@ -189,10 +186,10 @@ class APIClient:
             
             # 最终报告状态
             if status == 1:
-                logger.info("AI 报告生成成功")
+                logger.info("----AI 报告生成成功----")
                 return True
             else:
-                logger.error("AI 报告生成失败")
+                logger.error("----AI 报告生成失败----")
                 return False
             
         except requests.exceptions.Timeout:

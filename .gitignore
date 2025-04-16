@@ -177,4 +177,9 @@ cython_debug/
 .DS_Store
 
 # node_modules
-.node_modules/
+node_modules/
+
+# Log files
+*.log
+logs/
+log/
