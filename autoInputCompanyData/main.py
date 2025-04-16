@@ -77,20 +77,18 @@ def main():
                 failure_count += 1
                 failure_record.append(idx)
             
-            # 如果不是最后一条记录，添加随机延时2-3分钟
-            if idx < total_records:
-                sleep_time = random.randint(120, 180)  # 2-3分钟的随机秒数
-                #sleep_time = 120
-                logger.info(f"等待{sleep_time}秒后处理下一条记录...")
-                time.sleep(sleep_time)
+            # # 如果不是最后一条记录，添加随机延时2-3分钟
+            # if idx < total_records:
+            #     sleep_time = random.randint(120, 180)  # 2-3分钟的随机秒数
+            #     #sleep_time = 120
+            #     logger.info(f"等待{sleep_time}秒后处理下一条记录...")
+            #     time.sleep(sleep_time)
         
     except Exception as e:
         logger.error(f"主程序异常: {str(e)}", exc_info=True)
     
     logger.info(f"处理完成 成功: {success_count} 失败: {failure_count}")
     if failure_count > 0:
-        for record in failure_record:
-            logger.info(f"第{failure_record[record-1]}条记录处理失败")
-
+        logger.info(f"失败记录: 第{', '.join(str(record) for record in failure_record)}行录入失败")
 if __name__ == "__main__":
     main()
